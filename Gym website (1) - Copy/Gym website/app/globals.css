@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #050505;
+    --foreground: #ffffff;
+    --accent-teal: #00f0ff;
+    --accent-magenta: #ff003c;
+  }
+}
+
+html {
+  overflow-x: clip; /* clip prevents horizontal scroll without creating scroll container */
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  overflow-x: clip; /* MUST use clip, not hidden — hidden breaks position:sticky */
+  /* Hide scrollbar for cleaner look */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Base utility text classes for aesthetics */
+.text-glow-teal {
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.text-glow-magenta {
+  text-shadow: 0 0 20px rgba(255, 0, 60, 0.4);
+}
