@@ -29,6 +29,10 @@ export default function GlobalParticles() {
 
   const particlesRef = useRef<Particle[]>([]);
 
+  // Mouse position ref — updated via listener, read in rAF loop (no re-renders)
+  const mouseRef = useRef({ x: 0.5, y: 0.5 }); // normalized 0-1
+  const targetMouseRef = useRef({ x: 0.5, y: 0.5 }); // raw target for lerp
+
   useEffect(() => {
     const particles: Particle[] = [];
     const isMobile = window.innerWidth < 768;
@@ -65,6 +69,18 @@ export default function GlobalParticles() {
     particlesRef.current = particles;
   }, []);
 
+  // Mouse tracking — update target on move, rAF loop lerps toward it
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      targetMouseRef.current = {
+        x: e.clientX / window.innerWidth,
+        y: e.clientY / window.innerHeight,
+      };
+    };
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMouseMove);
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -84,6 +100,19 @@ export default function GlobalParticles() {
 
       ctx.clearRect(0, 0, W, H);
 
+      // Smoothly lerp mouse toward target (cinematic lag)
+      const lerpSpeed = 0.04;
+      mouseRef.current.x += (targetMouseRef.current.x - mouseRef.current.x) * lerpSpeed;
+      mouseRef.current.y += (targetMouseRef.current.y - mouseRef.current.y) * lerpSpeed;
+
+      // Parallax offset from mouse: BG moves more (30px max), FG less (15px max)
+      const mouseDX = (mouseRef.current.x - 0.5) * 2; // -1 to 1
+      const mouseDY = (mouseRef.current.y - 0.5) * 2;
+      const bgMouseX = mouseDX * 30;
+      const bgMouseY = mouseDY * 30;
+      const fgMouseX = mouseDX * 15;
+      const fgMouseY = mouseDY * 15;
+
       const scrollVal = smoothProgress.get();
       // BG particles have bigger parallax shift, FG particles less
       const bgParallax = scrollVal * H * 0.8;
@@ -98,9 +127,12 @@ export default function GlobalParticles() {
         if (p.x < -0.05) p.x = 1.05;
         if (p.x > 1.05)  p.x = -0.05;
 
-        const drawX = p.x * W;
-        const parallax = p.layer === 0 ? bgParallax : fgParallax;
-        let drawY = (p.y * H) - parallax;
+        const scrollParallax = p.layer === 0 ? bgParallax : fgParallax;
+        const mX = p.layer === 0 ? bgMouseX : fgMouseX;
+        const mY = p.layer === 0 ? bgMouseY : fgMouseY;
+
+        const drawX = p.x * W + mX;
+        let drawY = (p.y * H) - scrollParallax + mY;
         drawY = ((drawY % H) + H) % H;
 
         // Breathe alpha
