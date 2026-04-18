@@ -116,8 +116,7 @@ export default function DeadliftScroll() {
         oct.imageSmoothingQuality = "high";
         oct.drawImage(frame, 0, 0, dw, dh);
 
-        // 2. Draw sharpened result by overlay compositing:
-        //    First pass: normal draw
+        // 2. First pass: normal draw
         ctx.globalCompositeOperation = "source-over";
         ctx.drawImage(offscreen, dx, dy, dw, dh);
 
@@ -126,7 +125,7 @@ export default function DeadliftScroll() {
         ctx.globalAlpha = 0.12;
         ctx.drawImage(offscreen, dx, dy, dw, dh);
 
-        // 4. Restore and do a final crisp draw on top
+        // 4. Restore blending
         ctx.globalAlpha = 1;
         ctx.globalCompositeOperation = "source-over";
 
@@ -147,7 +146,7 @@ export default function DeadliftScroll() {
         ctx.fillStyle = radial;
         ctx.fillRect(0, 0, CW, CH);
 
-        // LEFT edge fade: from left canvas edge to 52% into the drawn image width
+        // LEFT edge fade
         const lEdge  = dx + dw * 0.52;
         const lft = ctx.createLinearGradient(0, 0, lEdge, 0);
         lft.addColorStop(0,    "rgba(0,0,0,1)");
@@ -156,7 +155,7 @@ export default function DeadliftScroll() {
         ctx.fillStyle = lft;
         ctx.fillRect(0, 0, lEdge, CH);
 
-        // RIGHT edge fade: from right canvas edge to 48% into drawn image (mirrored)
+        // RIGHT edge fade
         const rStart = dx + dw * 0.48;
         const rgt = ctx.createLinearGradient(CW, 0, rStart, 0);
         rgt.addColorStop(0,    "rgba(0,0,0,1)");
@@ -165,7 +164,7 @@ export default function DeadliftScroll() {
         ctx.fillStyle = rgt;
         ctx.fillRect(rStart, 0, CW - rStart, CH);
 
-        // TOP edge fade from top to 35% down from drawn image top
+        // TOP edge fade
         const tEdge = dy + dh * 0.35;
         const top = ctx.createLinearGradient(0, 0, 0, tEdge);
         top.addColorStop(0, "rgba(0,0,0,1)");
@@ -173,7 +172,7 @@ export default function DeadliftScroll() {
         ctx.fillStyle = top;
         ctx.fillRect(0, 0, CW, tEdge);
 
-        // BOTTOM edge fade from bottom up to 65% of drawn image height
+        // BOTTOM edge fade
         const bStart = dy + dh * 0.65;
         const bot = ctx.createLinearGradient(0, CH, 0, bStart);
         bot.addColorStop(0, "rgba(0,0,0,1)");
@@ -189,7 +188,7 @@ export default function DeadliftScroll() {
     const loop = () => { paint(); rafId = requestAnimationFrame(loop); };
     rafId = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(rafId);
-  }, [smoothProgress]); // smoothProgress is a stable MotionValue ref — safe to depend on
+  }, [smoothProgress]);
 
   // ─── Loading UI ────────────────────────────────────────────────────────────
   const loadPercent = Math.round((imagesLoaded / FRAME_COUNT) * 100);
