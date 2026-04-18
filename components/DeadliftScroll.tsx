@@ -3,7 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform, MotionValue } from "framer-motion";
 
+<<<<<<< HEAD
 const FRAME_COUNT = 226;
+=======
+const FRAME_COUNT = 142;
+>>>>>>> f1488ac2b58d804f145d379cf76c5420839ae171
 
 export default function DeadliftScroll() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,6 +72,7 @@ export default function DeadliftScroll() {
 
     let rafId: number;
 
+<<<<<<< HEAD
     // Off-screen canvas used for unsharp-mask sharpening
     const offscreen = document.createElement("canvas");
 
@@ -92,6 +97,19 @@ export default function DeadliftScroll() {
       // High-quality up/downscaling
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
+=======
+    const paint = () => {
+      // alpha:true so edges become transparent → the #050505 page shows through
+      const ctx = canvas.getContext("2d", { alpha: true });
+      if (!ctx) return;
+
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      if (canvas.width !== W) canvas.width = W;
+      if (canvas.height !== H) canvas.height = H;
+
+      ctx.clearRect(0, 0, W, H);
+>>>>>>> f1488ac2b58d804f145d379cf76c5420839ae171
 
       const progress = smoothProgress.get();
       const idx = Math.round(progress * (FRAME_COUNT - 1));
@@ -99,6 +117,7 @@ export default function DeadliftScroll() {
 
       if (frame?.complete && frame.naturalWidth > 0) {
         const ir = frame.naturalWidth / frame.naturalHeight;
+<<<<<<< HEAD
         const cr = CW / CH;
         let dw: number, dh: number;
         if (cr > ir) { dw = CW; dh = CW / ir; }
@@ -129,13 +148,29 @@ export default function DeadliftScroll() {
         // 4. Restore and do a final crisp draw on top
         ctx.globalAlpha = 1;
         ctx.globalCompositeOperation = "source-over";
+=======
+        const cr = W / H;
+        let dw: number, dh: number;
+        if (cr > ir) { dw = W; dh = W / ir; }
+        else          { dh = H; dw = H * ir; }
+
+        const dx = (W - dw) / 2;
+        const dy = (H - dh) / 2;
+
+        ctx.globalCompositeOperation = "source-over";
+        ctx.drawImage(frame, dx, dy, dw, dh);
+>>>>>>> f1488ac2b58d804f145d379cf76c5420839ae171
 
         // ── Destination-out vignette ─────────────────────────────
         // Erases alpha at edges so transparent canvas reveals #050505 behind
         ctx.globalCompositeOperation = "destination-out";
 
         // Radial: keep just the centre subject, dissolve outward
+<<<<<<< HEAD
         const cx = CW / 2, cy = CH / 2;
+=======
+        const cx = W / 2, cy = H / 2;
+>>>>>>> f1488ac2b58d804f145d379cf76c5420839ae171
         // outerR must reach at least to the image edges so it fades from centre out
         const outerR = Math.max(dw, dh) * 0.52;
         const innerR = outerR * 0.12;
@@ -145,7 +180,11 @@ export default function DeadliftScroll() {
         radial.addColorStop(0.65, "rgba(0,0,0,0.65)");
         radial.addColorStop(1,    "rgba(0,0,0,1)");
         ctx.fillStyle = radial;
+<<<<<<< HEAD
         ctx.fillRect(0, 0, CW, CH);
+=======
+        ctx.fillRect(0, 0, W, H);
+>>>>>>> f1488ac2b58d804f145d379cf76c5420839ae171
 
         // LEFT edge fade: from left canvas edge to 52% into the drawn image width
         const lEdge  = dx + dw * 0.52;
@@ -154,16 +193,28 @@ export default function DeadliftScroll() {
         lft.addColorStop(0.55, "rgba(0,0,0,0.7)");
         lft.addColorStop(1,    "rgba(0,0,0,0)");
         ctx.fillStyle = lft;
+<<<<<<< HEAD
         ctx.fillRect(0, 0, lEdge, CH);
 
         // RIGHT edge fade: from right canvas edge to 48% into drawn image (mirrored)
         const rStart = dx + dw * 0.48;
         const rgt = ctx.createLinearGradient(CW, 0, rStart, 0);
+=======
+        ctx.fillRect(0, 0, lEdge, H);
+
+        // RIGHT edge fade: from right canvas edge to 48% into drawn image (mirrored)
+        const rStart = dx + dw * 0.48;
+        const rgt = ctx.createLinearGradient(W, 0, rStart, 0);
+>>>>>>> f1488ac2b58d804f145d379cf76c5420839ae171
         rgt.addColorStop(0,    "rgba(0,0,0,1)");
         rgt.addColorStop(0.55, "rgba(0,0,0,0.7)");
         rgt.addColorStop(1,    "rgba(0,0,0,0)");
         ctx.fillStyle = rgt;
+<<<<<<< HEAD
         ctx.fillRect(rStart, 0, CW - rStart, CH);
+=======
+        ctx.fillRect(rStart, 0, W - rStart, H);
+>>>>>>> f1488ac2b58d804f145d379cf76c5420839ae171
 
         // TOP edge fade from top to 35% down from drawn image top
         const tEdge = dy + dh * 0.35;
@@ -171,6 +222,7 @@ export default function DeadliftScroll() {
         top.addColorStop(0, "rgba(0,0,0,1)");
         top.addColorStop(1, "rgba(0,0,0,0)");
         ctx.fillStyle = top;
+<<<<<<< HEAD
         ctx.fillRect(0, 0, CW, tEdge);
 
         // BOTTOM edge fade from bottom up to 65% of drawn image height
@@ -183,6 +235,19 @@ export default function DeadliftScroll() {
 
         ctx.globalCompositeOperation = "source-over"; // reset
         ctx.globalAlpha = 1;
+=======
+        ctx.fillRect(0, 0, W, tEdge);
+
+        // BOTTOM edge fade from bottom up to 65% of drawn image height
+        const bStart = dy + dh * 0.65;
+        const bot = ctx.createLinearGradient(0, H, 0, bStart);
+        bot.addColorStop(0, "rgba(0,0,0,1)");
+        bot.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = bot;
+        ctx.fillRect(0, bStart, W, H - bStart);
+
+        ctx.globalCompositeOperation = "source-over"; // reset
+>>>>>>> f1488ac2b58d804f145d379cf76c5420839ae171
       }
     };
 
@@ -218,6 +283,7 @@ export default function DeadliftScroll() {
       {/* Sticky canvas — pinned while scroll space is consumed */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         {/* Canvas — edges fade to transparent via destination-out compositing */}
+<<<<<<< HEAD
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
@@ -226,6 +292,9 @@ export default function DeadliftScroll() {
             imageRendering: "auto",
           }}
         />
+=======
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+>>>>>>> f1488ac2b58d804f145d379cf76c5420839ae171
 
         {/* Overlay text beats */}
         <div className="absolute inset-0 z-10 pointer-events-none">
