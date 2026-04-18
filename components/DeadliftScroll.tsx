@@ -107,12 +107,12 @@ export default function DeadliftScroll() {
         let dx = (CW - dw) / 2;
         let dy = (CH - dh) / 2;
 
-        // Mobile adjustments: decrease size and shift left
+        // Mobile adjustments: decrease size and shift left slightly less to center
         if (W < 768) {
           const mobileScale = 0.85;
           dw *= mobileScale;
           dh *= mobileScale;
-          dx = (CW - dw) / 2 - (CW * 0.12);
+          dx = (CW - dw) / 2 - (CW * 0.06);
           dy = (CH - dh) / 2;
         }
 
