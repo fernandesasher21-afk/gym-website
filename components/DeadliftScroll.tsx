@@ -104,8 +104,17 @@ export default function DeadliftScroll() {
         if (cr > ir) { dw = CW; dh = CW / ir; }
         else          { dh = CH; dw = CH * ir; }
 
-        const dx = (CW - dw) / 2;
-        const dy = (CH - dh) / 2;
+        let dx = (CW - dw) / 2;
+        let dy = (CH - dh) / 2;
+
+        // Mobile adjustments: decrease size and shift left
+        if (W < 768) {
+          const mobileScale = 0.85;
+          dw *= mobileScale;
+          dh *= mobileScale;
+          dx = (CW - dw) / 2 - (CW * 0.12);
+          dy = (CH - dh) / 2;
+        }
 
         // ── Unsharp Mask sharpening via offscreen canvas ──────────────
         // 1. Draw original to offscreen at exact size
