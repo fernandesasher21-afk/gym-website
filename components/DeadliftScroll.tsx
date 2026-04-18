@@ -68,17 +68,30 @@ export default function DeadliftScroll() {
 
     let rafId: number;
 
+    // Off-screen canvas used for unsharp-mask sharpening
+    const offscreen = document.createElement("canvas");
+
     const paint = () => {
       // alpha:true so edges become transparent → the #050505 page shows through
-      const ctx = canvas.getContext("2d", { alpha: true });
+      const ctx = canvas.getContext("2d", { alpha: true, willReadFrequently: false });
       if (!ctx) return;
 
+      // ── Device-pixel-ratio aware sizing for crisp rendering on HiDPI screens
+      const DPR = Math.min(window.devicePixelRatio || 1, 2);
       const W = window.innerWidth;
       const H = window.innerHeight;
-      if (canvas.width !== W) canvas.width = W;
-      if (canvas.height !== H) canvas.height = H;
+      const CW = Math.round(W * DPR);
+      const CH = Math.round(H * DPR);
+      if (canvas.width !== CW) canvas.width = CW;
+      if (canvas.height !== CH) canvas.height = CH;
+      canvas.style.width  = W + "px";
+      canvas.style.height = H + "px";
 
-      ctx.clearRect(0, 0, W, H);
+      ctx.clearRect(0, 0, CW, CH);
+
+      // High-quality up/downscaling
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
 
       const progress = smoothProgress.get();
       const idx = Math.round(progress * (FRAME_COUNT - 1));
@@ -86,23 +99,43 @@ export default function DeadliftScroll() {
 
       if (frame?.complete && frame.naturalWidth > 0) {
         const ir = frame.naturalWidth / frame.naturalHeight;
-        const cr = W / H;
+        const cr = CW / CH;
         let dw: number, dh: number;
-        if (cr > ir) { dw = W; dh = W / ir; }
-        else          { dh = H; dw = H * ir; }
+        if (cr > ir) { dw = CW; dh = CW / ir; }
+        else          { dh = CH; dw = CH * ir; }
 
-        const dx = (W - dw) / 2;
-        const dy = (H - dh) / 2;
+        const dx = (CW - dw) / 2;
+        const dy = (CH - dh) / 2;
 
+        // ── Unsharp Mask sharpening via offscreen canvas ──────────────
+        // 1. Draw original to offscreen at exact size
+        offscreen.width  = dw;
+        offscreen.height = dh;
+        const oct = offscreen.getContext("2d", { alpha: true })!;
+        oct.imageSmoothingEnabled = true;
+        oct.imageSmoothingQuality = "high";
+        oct.drawImage(frame, 0, 0, dw, dh);
+
+        // 2. Draw sharpened result by overlay compositing:
+        //    First pass: normal draw
         ctx.globalCompositeOperation = "source-over";
-        ctx.drawImage(frame, dx, dy, dw, dh);
+        ctx.drawImage(offscreen, dx, dy, dw, dh);
+
+        // 3. Second pass: hard-light overlay at low opacity sharpens mid-tones
+        ctx.globalCompositeOperation = "hard-light";
+        ctx.globalAlpha = 0.12;
+        ctx.drawImage(offscreen, dx, dy, dw, dh);
+
+        // 4. Restore and do a final crisp draw on top
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = "source-over";
 
         // ── Destination-out vignette ─────────────────────────────
         // Erases alpha at edges so transparent canvas reveals #050505 behind
         ctx.globalCompositeOperation = "destination-out";
 
         // Radial: keep just the centre subject, dissolve outward
-        const cx = W / 2, cy = H / 2;
+        const cx = CW / 2, cy = CH / 2;
         // outerR must reach at least to the image edges so it fades from centre out
         const outerR = Math.max(dw, dh) * 0.52;
         const innerR = outerR * 0.12;
@@ -112,7 +145,7 @@ export default function DeadliftScroll() {
         radial.addColorStop(0.65, "rgba(0,0,0,0.65)");
         radial.addColorStop(1,    "rgba(0,0,0,1)");
         ctx.fillStyle = radial;
-        ctx.fillRect(0, 0, W, H);
+        ctx.fillRect(0, 0, CW, CH);
 
         // LEFT edge fade: from left canvas edge to 52% into the drawn image width
         const lEdge  = dx + dw * 0.52;
@@ -121,16 +154,16 @@ export default function DeadliftScroll() {
         lft.addColorStop(0.55, "rgba(0,0,0,0.7)");
         lft.addColorStop(1,    "rgba(0,0,0,0)");
         ctx.fillStyle = lft;
-        ctx.fillRect(0, 0, lEdge, H);
+        ctx.fillRect(0, 0, lEdge, CH);
 
         // RIGHT edge fade: from right canvas edge to 48% into drawn image (mirrored)
         const rStart = dx + dw * 0.48;
-        const rgt = ctx.createLinearGradient(W, 0, rStart, 0);
+        const rgt = ctx.createLinearGradient(CW, 0, rStart, 0);
         rgt.addColorStop(0,    "rgba(0,0,0,1)");
         rgt.addColorStop(0.55, "rgba(0,0,0,0.7)");
         rgt.addColorStop(1,    "rgba(0,0,0,0)");
         ctx.fillStyle = rgt;
-        ctx.fillRect(rStart, 0, W - rStart, H);
+        ctx.fillRect(rStart, 0, CW - rStart, CH);
 
         // TOP edge fade from top to 35% down from drawn image top
         const tEdge = dy + dh * 0.35;
@@ -138,17 +171,18 @@ export default function DeadliftScroll() {
         top.addColorStop(0, "rgba(0,0,0,1)");
         top.addColorStop(1, "rgba(0,0,0,0)");
         ctx.fillStyle = top;
-        ctx.fillRect(0, 0, W, tEdge);
+        ctx.fillRect(0, 0, CW, tEdge);
 
         // BOTTOM edge fade from bottom up to 65% of drawn image height
         const bStart = dy + dh * 0.65;
-        const bot = ctx.createLinearGradient(0, H, 0, bStart);
+        const bot = ctx.createLinearGradient(0, CH, 0, bStart);
         bot.addColorStop(0, "rgba(0,0,0,1)");
         bot.addColorStop(1, "rgba(0,0,0,0)");
         ctx.fillStyle = bot;
-        ctx.fillRect(0, bStart, W, H - bStart);
+        ctx.fillRect(0, bStart, CW, CH - bStart);
 
         ctx.globalCompositeOperation = "source-over"; // reset
+        ctx.globalAlpha = 1;
       }
     };
 
@@ -184,7 +218,14 @@ export default function DeadliftScroll() {
       {/* Sticky canvas — pinned while scroll space is consumed */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         {/* Canvas — edges fade to transparent via destination-out compositing */}
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full"
+          style={{
+            filter: "contrast(1.12) saturate(1.18) brightness(1.04)",
+            imageRendering: "auto",
+          }}
+        />
 
         {/* Overlay text beats */}
         <div className="absolute inset-0 z-10 pointer-events-none">
