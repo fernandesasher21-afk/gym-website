@@ -492,6 +492,110 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── 6.3) FIND US (CONTACT) ─────────────────────────────────────────── */}
+      <section id="contact" className="py-32 px-8 md:px-24 bg-[#050505] relative z-10 border-t border-white/[0.05]">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <p className="text-[#00f0ff] uppercase tracking-[0.4em] text-xs font-semibold mb-4">Location</p>
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter shimmer-text">
+              FIND US
+            </h2>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="bg-white/[0.02] border border-white/5 rounded-xl p-8 md:p-12 flex flex-col md:flex-row gap-10 md:gap-16 relative overflow-hidden shadow-2xl"
+          >
+            {/* Ambient glow in the background of the card */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#00f0ff]/5 blur-[100px] pointer-events-none" />
+
+            {/* Left Column: Info */}
+            <div className="flex-1 space-y-10 relative z-10">
+              {/* Address */}
+              <div className="flex items-start gap-5">
+                <div className="mt-1 text-[#00f0ff]">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="text-white font-bold tracking-widest mb-2 text-sm uppercase">Address</h4>
+                  <p className="text-white/50 leading-relaxed text-sm max-w-[280px]">
+                    123 Vanguard Avenue, Iron District, Level 4,<br/> Metropolis, NY 10001
+                  </p>
+                </div>
+              </div>
+
+              {/* Hours */}
+              <div className="flex items-start gap-5">
+                <div className="mt-1 text-[#00f0ff]">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="text-white font-bold tracking-widest mb-2 text-sm uppercase">Hours</h4>
+                  <p className="text-[#00f0ff] font-medium text-sm tracking-wide">Open 24 Hours</p>
+                  <p className="text-white/50 text-sm mt-1">Every day of the week</p>
+                </div>
+              </div>
+
+              {/* Social */}
+              <div className="flex items-start gap-5">
+                <div className="mt-1 text-[#00f0ff]">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="text-white font-bold tracking-widest mb-2 text-sm uppercase">Social</h4>
+                  <p className="text-white/50 text-sm hover:text-white transition-colors cursor-pointer">Follow us on Instagram</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Map & Button */}
+            <div className="flex-1 flex flex-col gap-6 relative z-10">
+              <div className="w-full h-[280px] bg-[#020202] rounded-xl overflow-hidden relative border border-white/5">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387190.2798902705!2d-74.25986548248684!3d40.69714941932609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1714582000000!5m2!1sen!2s"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={false}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="filter invert-[100%] hue-rotate-[180deg] contrast-[1.1] opacity-80 hover:opacity-100 transition-opacity duration-500"
+                ></iframe>
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(0,240,255,0.2)" }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full border border-[#00f0ff]/50 bg-[#00f0ff]/10 hover:bg-[#00f0ff]/20 text-[#00f0ff] font-medium py-4 rounded-lg flex items-center justify-center gap-3 transition-all duration-300 uppercase tracking-widest text-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m22 2-7 20-4-9-9-4Z"/>
+                  <path d="M22 2 11 13"/>
+                </svg>
+                Get Directions
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── 7) FINAL CTA ─────────────────────────────────────────────────────── */}
       <section className="py-40 relative z-10 overflow-hidden flex items-center justify-center">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0a0a0a]" />
