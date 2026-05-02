@@ -85,6 +85,7 @@ function AmbientFloat({ children }: { children: React.ReactNode }) {
 export default function Home() {
   const { scrollY } = useScroll();
 
+
   // Subtle parallax for the hero atmospheric glow blob
   const glowY = useTransform(scrollY, [0, 600], [0, -80]);
   const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
