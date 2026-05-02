@@ -5,6 +5,7 @@ import GlobalParticles from "@/components/GlobalParticles";
 import Navbar from "@/components/Navbar";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 // ─── Split-text helpers ───────────────────────────────────────────────────────
 
@@ -580,7 +581,10 @@ export default function Home() {
                   className="filter invert-[100%] hue-rotate-[180deg] contrast-[1.1] opacity-80 hover:opacity-100 transition-opacity duration-500"
                 ></iframe>
               </div>
-              <motion.button
+              <motion.a
+                href="https://www.google.com/maps/dir/?api=1&origin=My+Location&destination=New+York,+NY"
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(0,240,255,0.2)" }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full border border-[#00f0ff]/50 bg-[#00f0ff]/10 hover:bg-[#00f0ff]/20 text-[#00f0ff] font-medium py-4 rounded-lg flex items-center justify-center gap-3 transition-all duration-300 uppercase tracking-widest text-sm"
@@ -590,7 +594,7 @@ export default function Home() {
                   <path d="M22 2 11 13"/>
                 </svg>
                 Get Directions
-              </motion.button>
+              </motion.a>
             </div>
           </motion.div>
         </div>

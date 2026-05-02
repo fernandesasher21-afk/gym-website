@@ -249,7 +249,7 @@ export default function DeadliftScroll() {
             title="EMBRACE THE STRAIN" subtitle="Growth lives in resistance" />
 
           <BeatText progress={smoothProgress} range={[0.75, 0.80, 0.93, 1.0]}
-            title="TRAIN BEYOND LIMITS" subtitle="Join the elite" showCta />
+            title="TRAIN BEYOND LIMITS" subtitle="Join the elite" />
         </div>
       </div>
     </div>
@@ -277,13 +277,12 @@ function ScrollIndicator({ progress }: { progress: MotionValue<number> }) {
 }
 
 function BeatText({
-  progress, range, title, subtitle, showCta,
+  progress, range, title, subtitle,
 }: {
   progress: MotionValue<number>;
   range: [number, number, number, number];
   title: string;
   subtitle: string;
-  showCta?: boolean;
 }) {
   const opacity = useTransform(progress, range, [0, 1, 1, 0]);
   const y = useTransform(progress, range, [28, 0, 0, -28]);
@@ -299,11 +298,6 @@ function BeatText({
       <p className="mt-4 text-base md:text-xl text-white/55 font-light tracking-widest max-w-lg">
         {subtitle}
       </p>
-      {showCta && (
-        <button className="mt-10 px-10 py-4 border border-[#00f0ff]/40 bg-[#00f0ff]/10 hover:bg-[#00f0ff]/20 text-[#00f0ff] tracking-[0.25em] text-xs uppercase transition-all duration-400 pointer-events-auto shadow-[0_0_20px_rgba(0,240,255,0.15)] hover:shadow-[0_0_40px_rgba(0,240,255,0.35)] hover:scale-105 active:scale-95">
-          Start Training
-        </button>
-      )}
     </motion.div>
   );
 }
