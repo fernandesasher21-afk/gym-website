@@ -5,7 +5,6 @@ import GlobalParticles from "@/components/GlobalParticles";
 import Navbar from "@/components/Navbar";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 
 // ─── Split-text helpers ───────────────────────────────────────────────────────
 
