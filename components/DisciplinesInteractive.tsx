@@ -30,7 +30,8 @@ const disciplinesData = [
         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
       </svg>
     ),
-    image: "/Hypertrophy.mp4",
+    image: "/hypertrophy_bg.png",
+    video: "/Hypertrophy.mp4",
   },
   {
     id: "fatloss",
@@ -44,6 +45,7 @@ const disciplinesData = [
       </svg>
     ),
     image: "/fatloss_bg.png",
+    video: "/rope master.mp4",
   },
   {
     id: "performance",
