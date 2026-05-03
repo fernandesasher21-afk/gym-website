@@ -68,8 +68,7 @@ export default function DisciplinesInteractive() {
 
   return (
     <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-16 min-h-[600px]">
-      
-      {/* ── LEFT COLUMN: Vertical List ── */}
+      {/* ── LEFT COLUMN (Accordion on Mobile, List on Desktop) ── */}
       <div className="w-full lg:w-5/12 flex flex-col gap-4 justify-center relative z-20">
         {disciplinesData.map((discipline, idx) => {
           const isActive = activeIndex === idx;
@@ -84,13 +83,13 @@ export default function DisciplinesInteractive() {
               tabIndex={0}
               animate={{
                 scale: isActive ? 1.02 : 1,
-                opacity: isActive ? 1 : 0.4,
-                filter: isActive ? "blur(0px)" : "blur(2px)",
-                x: isActive ? 10 : 0,
+                opacity: isActive ? 1 : 0.6,
+                filter: isActive ? "blur(0px)" : "blur(0px)", // Removed blur on mobile for better tap experience
+                x: isActive ? 4 : 0,
               }}
               transition={{ duration: 0.4, ease: "easeOut" }}
               className={`
-                relative p-6 rounded-xl cursor-pointer border overflow-hidden
+                relative rounded-xl cursor-pointer border overflow-hidden
                 focus:outline-none focus:ring-2 focus:ring-[#00f0ff]/50
                 ${isActive 
                   ? "bg-[#0a0a0a] border-white/10 shadow-xl" 
@@ -115,7 +114,8 @@ export default function DisciplinesInteractive() {
                 />
               )}
 
-              <div className="relative z-10 flex items-center gap-6">
+              {/* CARD HEADER */}
+              <div className="relative z-10 flex items-center gap-6 p-6">
                 <div className={`text-3xl ${isActive ? (isTeal ? 'text-[#00f0ff]' : 'text-[#ff003c]') : 'text-white/40'}`}>
                   {discipline.icon}
                 </div>
@@ -128,20 +128,60 @@ export default function DisciplinesInteractive() {
                      <motion.p
                        initial={{ opacity: 0, height: 0 }}
                        animate={{ opacity: 1, height: "auto" }}
-                       className={`mt-2 text-xs font-semibold uppercase tracking-widest ${isTeal ? 'text-[#00f0ff]/80' : 'text-[#ff003c]/80'}`}
+                       className={`mt-2 text-xs font-semibold uppercase tracking-widest hidden lg:block ${isTeal ? 'text-[#00f0ff]/80' : 'text-[#ff003c]/80'}`}
                      >
                        {discipline.sub}
                      </motion.p>
                   )}
                 </div>
               </div>
+
+              {/* ── MOBILE EXPANDED ACCORDION CONTENT ── */}
+              <AnimatePresence>
+                {isActive && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="lg:hidden relative z-10 px-6 pb-6 overflow-hidden"
+                  >
+                    <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4 border border-white/10">
+                      <Image
+                        src={discipline.image}
+                        alt={discipline.title}
+                        fill
+                        className="object-cover opacity-80 filter contrast-125"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
+                    </div>
+                    
+                    <p className={`text-xs font-semibold uppercase tracking-widest mb-2 ${isTeal ? 'text-[#00f0ff]/80' : 'text-[#ff003c]/80'}`}>
+                      {discipline.sub}
+                    </p>
+                    <p className="text-white/60 text-sm font-light leading-relaxed mb-6">
+                      {discipline.detail}
+                    </p>
+                    
+                    <button 
+                      className={`w-full py-3 rounded-full text-xs font-bold uppercase tracking-widest border transition-colors duration-300 ${
+                        isTeal 
+                          ? 'border-[#00f0ff]/40 text-[#00f0ff] hover:bg-[#00f0ff]/10' 
+                          : 'border-[#ff003c]/40 text-[#ff003c] hover:bg-[#ff003c]/10'
+                      }`}
+                    >
+                      Explore Program
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           );
         })}
       </div>
 
-      {/* ── RIGHT COLUMN: Dynamic Preview Panel ── */}
-      <div className="w-full lg:w-7/12 relative rounded-2xl overflow-hidden bg-[#020202] border border-white/5 shadow-2xl min-h-[400px] lg:min-h-full flex items-end">
+      {/* ── RIGHT COLUMN: Dynamic Preview Panel (DESKTOP ONLY) ── */}
+      <div className="hidden lg:flex w-7/12 relative rounded-2xl overflow-hidden bg-[#020202] border border-white/5 shadow-2xl min-h-[600px] items-end">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeDiscipline.id}
@@ -155,7 +195,7 @@ export default function DisciplinesInteractive() {
               src={activeDiscipline.image}
               alt={activeDiscipline.title}
               fill
-              className="object-cover opacity-60 mix-blend-luminosity filter contrast-125"
+              className="object-cover opacity-70 filter contrast-125"
               priority
             />
             {/* Dark overlay gradients */}
@@ -163,7 +203,7 @@ export default function DisciplinesInteractive() {
             <div className={`absolute inset-0 bg-gradient-to-br from-transparent to-${activeDiscipline.color === 'teal' ? '[#00f0ff]' : '[#ff003c]'}/10`} />
 
             {/* Content overlay */}
-            <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end z-10">
+            <div className="absolute inset-0 p-12 flex flex-col justify-end z-10">
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -173,10 +213,10 @@ export default function DisciplinesInteractive() {
                   <span className={`w-8 h-[2px] ${activeDiscipline.color === 'teal' ? 'bg-[#00f0ff]' : 'bg-[#ff003c]'}`}></span>
                   0{activeIndex + 1}
                 </div>
-                <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white drop-shadow-2xl mb-4">
+                <h2 className="text-7xl font-black tracking-tighter text-white drop-shadow-2xl mb-4">
                   {activeDiscipline.title}
                 </h2>
-                <p className="text-white/60 text-lg md:text-xl font-light max-w-md leading-relaxed">
+                <p className="text-white/60 text-xl font-light max-w-md leading-relaxed">
                   {activeDiscipline.detail}
                 </p>
                 <motion.button 
