@@ -30,7 +30,7 @@ const disciplinesData = [
         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
       </svg>
     ),
-    image: "/hypertrophy_bg.png",
+    image: "/Hypertrophy.mp4",
   },
   {
     id: "fatloss",
@@ -74,7 +74,7 @@ export default function DisciplinesInteractive() {
         {disciplinesData.map((discipline, idx) => {
           const isActive = activeIndex === idx;
           const isTeal = discipline.color === "teal";
-          
+
           return (
             <motion.div
               key={discipline.id}
@@ -85,15 +85,15 @@ export default function DisciplinesInteractive() {
               animate={{
                 scale: isActive ? 1.02 : 1,
                 opacity: isActive ? 1 : 0.6,
-                filter: isActive ? "blur(0px)" : "blur(0px)", // Removed blur on mobile for better tap experience
+                filter: isActive ? "blur(0px)" : "blur(0px)",
                 x: isActive ? 4 : 0,
               }}
               transition={{ duration: 0.4, ease: "easeOut" }}
               className={`
                 relative rounded-xl cursor-pointer border overflow-hidden
                 focus:outline-none focus:ring-2 focus:ring-[#00f0ff]/50
-                ${isActive 
-                  ? "bg-[#0a0a0a] border-white/10 shadow-xl" 
+                ${isActive
+                  ? "bg-[#0a0a0a] border-white/10 shadow-xl"
                   : "bg-transparent border-transparent hover:bg-white/[0.02]"
                 }
               `}
@@ -105,13 +105,13 @@ export default function DisciplinesInteractive() {
                 className={`absolute inset-0 bg-gradient-to-r from-transparent via-transparent ${isTeal ? 'to-[#00f0ff]/[0.05]' : 'to-[#ff003c]/[0.05]'}`}
                 transition={{ duration: 0.4 }}
               />
-              
+
               {/* Accent Border Bottom - Fixed to stay down and not travel */}
               <motion.div
                 initial={{ scaleX: 0, opacity: 0 }}
-                animate={{ 
-                  scaleX: isActive ? 1 : 0, 
-                  opacity: isActive ? 1 : 0 
+                animate={{
+                  scaleX: isActive ? 1 : 0,
+                  opacity: isActive ? 1 : 0
                 }}
                 style={{ originX: 0 }}
                 className={`absolute bottom-0 left-0 h-[2px] w-full ${isTeal ? 'bg-gradient-to-r from-[#00f0ff] to-[#0080ff]' : 'bg-gradient-to-r from-[#ff003c] to-[#ff6b35]'}`}
@@ -129,13 +129,13 @@ export default function DisciplinesInteractive() {
                     {discipline.title}
                   </h3>
                   {isActive && (
-                     <motion.p
-                       initial={{ opacity: 0, height: 0 }}
-                       animate={{ opacity: 1, height: "auto" }}
-                       className={`mt-2 text-xs font-semibold uppercase tracking-widest hidden lg:block ${isTeal ? 'text-[#00f0ff]/80' : 'text-[#ff003c]/80'}`}
-                     >
-                       {discipline.sub}
-                     </motion.p>
+                    <motion.p
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      className={`mt-2 text-xs font-semibold uppercase tracking-widest hidden lg:block ${isTeal ? 'text-[#00f0ff]/80' : 'text-[#ff003c]/80'}`}
+                    >
+                      {discipline.sub}
+                    </motion.p>
                   )}
                 </div>
               </div>
@@ -151,9 +151,9 @@ export default function DisciplinesInteractive() {
                     className="lg:hidden relative z-10 px-6 pb-6 overflow-hidden"
                   >
                     <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4 border border-white/10">
-                      {discipline.video ? (
+                      {((discipline.video || discipline.image).endsWith('.mp4')) ? (
                         <video
-                          src={discipline.video}
+                          src={discipline.video || discipline.image}
                           autoPlay
                           loop
                           muted
@@ -170,20 +170,19 @@ export default function DisciplinesInteractive() {
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
                     </div>
-                    
+
                     <p className={`text-xs font-semibold uppercase tracking-widest mb-2 ${isTeal ? 'text-[#00f0ff]/80' : 'text-[#ff003c]/80'}`}>
                       {discipline.sub}
                     </p>
                     <p className="text-white/60 text-sm font-light leading-relaxed mb-6">
                       {discipline.detail}
                     </p>
-                    
-                    <button 
-                      className={`w-full py-3 rounded-full text-xs font-bold uppercase tracking-widest border transition-colors duration-300 ${
-                        isTeal 
-                          ? 'border-[#00f0ff]/40 text-[#00f0ff] hover:bg-[#00f0ff]/10' 
+
+                    <button
+                      className={`w-full py-3 rounded-full text-xs font-bold uppercase tracking-widest border transition-colors duration-300 ${isTeal
+                          ? 'border-[#00f0ff]/40 text-[#00f0ff] hover:bg-[#00f0ff]/10'
                           : 'border-[#ff003c]/40 text-[#ff003c] hover:bg-[#ff003c]/10'
-                      }`}
+                        }`}
                     >
                       Explore Program
                     </button>
@@ -206,9 +205,9 @@ export default function DisciplinesInteractive() {
             transition={{ duration: 0.5, ease: "easeInOut" }}
             className="absolute inset-0 w-full h-full"
           >
-            {activeDiscipline.video ? (
+            {((activeDiscipline.video || activeDiscipline.image).endsWith('.mp4')) ? (
               <video
-                src={activeDiscipline.video}
+                src={activeDiscipline.video || activeDiscipline.image}
                 autoPlay
                 loop
                 muted
@@ -245,14 +244,13 @@ export default function DisciplinesInteractive() {
                 <p className="text-white/60 text-xl font-light max-w-md leading-relaxed">
                   {activeDiscipline.detail}
                 </p>
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`mt-8 px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest border transition-colors duration-300 ${
-                    activeDiscipline.color === 'teal' 
-                      ? 'border-[#00f0ff]/40 text-[#00f0ff] hover:bg-[#00f0ff]/10' 
+                  className={`mt-8 px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest border transition-colors duration-300 ${activeDiscipline.color === 'teal'
+                      ? 'border-[#00f0ff]/40 text-[#00f0ff] hover:bg-[#00f0ff]/10'
                       : 'border-[#ff003c]/40 text-[#ff003c] hover:bg-[#ff003c]/10'
-                  }`}
+                    }`}
                 >
                   Explore Program
                 </motion.button>
