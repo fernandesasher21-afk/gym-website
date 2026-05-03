@@ -17,6 +17,7 @@ const disciplinesData = [
       </svg>
     ),
     image: "/strength_bg.png",
+    video: "/deadlift master.mp4",
   },
   {
     id: "hypertrophy",
@@ -150,12 +151,23 @@ export default function DisciplinesInteractive() {
                     className="lg:hidden relative z-10 px-6 pb-6 overflow-hidden"
                   >
                     <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4 border border-white/10">
-                      <Image
-                        src={discipline.image}
-                        alt={discipline.title}
-                        fill
-                        className="object-cover opacity-80 filter contrast-125"
-                      />
+                      {discipline.video ? (
+                        <video
+                          src={discipline.video}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="absolute inset-0 w-full h-full object-cover opacity-80 filter contrast-125"
+                        />
+                      ) : (
+                        <Image
+                          src={discipline.image}
+                          alt={discipline.title}
+                          fill
+                          className="object-cover opacity-80 filter contrast-125"
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
                     </div>
                     
@@ -194,13 +206,24 @@ export default function DisciplinesInteractive() {
             transition={{ duration: 0.5, ease: "easeInOut" }}
             className="absolute inset-0 w-full h-full"
           >
-            <Image
-              src={activeDiscipline.image}
-              alt={activeDiscipline.title}
-              fill
-              className="object-cover opacity-70 filter contrast-125"
-              priority
-            />
+            {activeDiscipline.video ? (
+              <video
+                src={activeDiscipline.video}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover opacity-70 filter contrast-125"
+              />
+            ) : (
+              <Image
+                src={activeDiscipline.image}
+                alt={activeDiscipline.title}
+                fill
+                className="object-cover opacity-70 filter contrast-125"
+                priority
+              />
+            )}
             {/* Dark overlay gradients */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent" />
             <div className={`absolute inset-0 bg-gradient-to-br from-transparent to-${activeDiscipline.color === 'teal' ? '[#00f0ff]' : '[#ff003c]'}/10`} />
