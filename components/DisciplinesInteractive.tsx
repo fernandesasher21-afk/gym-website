@@ -60,7 +60,7 @@ const disciplinesData = [
         <circle cx="12" cy="12" r="2" />
       </svg>
     ),
-    image: "/performance_bg.png",
+    image: "/Performance.mp4",
   },
 ];
 
