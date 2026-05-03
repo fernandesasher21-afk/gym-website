@@ -3,6 +3,7 @@
 import DeadliftScroll from "@/components/DeadliftScroll";
 import GlobalParticles from "@/components/GlobalParticles";
 import Navbar from "@/components/Navbar";
+import DisciplinesInteractive from "@/components/DisciplinesInteractive";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -137,7 +138,7 @@ export default function Home() {
         />
 
         {/* ── Hero content — fades out as user scrolls past ── */}
-        <motion.div style={{ opacity: heroOpacity }} className="relative z-10 w-full">
+        <motion.div style={{ opacity: heroOpacity }} className="relative z-10 w-full pt-24 md:pt-32">
           <AmbientFloat>
             <div className="text-center">
 
@@ -325,34 +326,7 @@ export default function Home() {
             <div className="gradient-line-sweep h-px w-32 mx-auto mt-6 rounded-full opacity-60" />
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { title: "Strength",    sub: "Raw power generation",   detail: "Barbell, powerlifting & compound lifts", color: "teal",    icon: "⚡" },
-              { title: "Hypertrophy", sub: "Muscle architecture",    detail: "Science-backed volume & intensity",       color: "magenta", icon: "💪" },
-              { title: "Fat Loss",    sub: "Metabolic conditioning", detail: "HIIT, circuits & caloric strategy",       color: "teal",    icon: "🔥" },
-              { title: "Performance", sub: "Athletic optimization",  detail: "Speed, agility & sport-specific drills",  color: "magenta", icon: "🎯" },
-            ].map((val, i) => (
-              <motion.div
-                key={val.title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="gradient-border-card card-sweep-hover group relative bg-[#080808] p-8 rounded-xl cursor-pointer hover:-translate-y-2 transition-all duration-300 overflow-hidden"
-                style={{ background: "linear-gradient(145deg, #0a0a0a, #060606)" }}
-              >
-                {/* Sweep shimmer on hover */}
-                <span className="sweep-el absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-white/[0.04] to-transparent -left-16" />
-                <div className={`absolute inset-0 bg-gradient-to-br from-transparent via-transparent ${val.color === 'teal' ? 'to-[#00f0ff]/[0.04]' : 'to-[#ff003c]/[0.04]'} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                <div className={`absolute bottom-0 left-0 h-[2px] w-full ${val.color === 'teal' ? 'bg-gradient-to-r from-[#00f0ff] to-[#0080ff]' : 'bg-gradient-to-r from-[#ff003c] to-[#ff6b35]'} scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-left`} />
-                <div className="text-3xl mb-5">{val.icon}</div>
-                <div className="text-xs font-light text-white/15 mb-4 tracking-widest">0{i+1}</div>
-                <h3 className="text-xl font-bold tracking-wide mb-1 relative z-10">{val.title}</h3>
-                <p className={`text-xs font-semibold uppercase tracking-widest mb-3 ${val.color === 'teal' ? 'text-[#00f0ff]/60' : 'text-[#ff003c]/60'}`}>{val.sub}</p>
-                <p className="text-white/30 text-xs leading-relaxed relative z-10">{val.detail}</p>
-              </motion.div>
-            ))}
-          </div>
+          <DisciplinesInteractive />
         </div>
       </section>
 

@@ -61,7 +61,7 @@ body::-webkit-scrollbar {
 
 /* ── Gradient text utility (non-animated) ─────────────────── */
 .gradient-text-cyan {
-  background: linear-gradient(135deg, #00f0ff 0%, #0080ff 100%);
+  background: linear-gradient(135deg, #00f0ff 0%, #ffffff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
