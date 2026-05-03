@@ -29,11 +29,14 @@ export default function Navbar() {
           : "backdrop-blur-md bg-transparent border-b border-white/[0.03]"
       }`}
     >
-      {/* Logo mark */}
+      {/* Logo mark — smooth scroll to top */}
       <motion.div
         className="flex items-center gap-2 cursor-pointer group"
         whileHover={{ scale: 1.04 }}
         transition={{ duration: 0.3 }}
+        onClick={() => window.scrollTo(0, 0)}
+        role="button"
+        aria-label="Back to top"
       >
         <div className="w-6 h-6 bg-white flex items-center justify-center rounded-sm group-hover:bg-[#00f0ff] transition-colors duration-400">
           <div className="w-3 h-3 bg-[#050505]" />

@@ -3,7 +3,8 @@
 import DeadliftScroll from "@/components/DeadliftScroll";
 import GlobalParticles from "@/components/GlobalParticles";
 import Navbar from "@/components/Navbar";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 // ─── Split-text helpers ───────────────────────────────────────────────────────
@@ -83,6 +84,17 @@ function AmbientFloat({ children }: { children: React.ReactNode }) {
 
 export default function Home() {
   const { scrollY } = useScroll();
+  const [dynamicWord, setDynamicWord] = useState("STRENGTH");
+
+  useEffect(() => {
+    const words = ["STRENGTH", "MASTERY"];
+    let i = 0;
+    const interval = setInterval(() => {
+      i = (i + 1) % words.length;
+      setDynamicWord(words[i]);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
 
   // Subtle parallax for the hero atmospheric glow blob
@@ -97,13 +109,21 @@ export default function Home() {
       {/* ── 1) HERO SECTION ──────────────────────────────────────────────────── */}
       <section className="min-h-screen flex flex-col items-center justify-center relative z-10 px-6 overflow-hidden">
 
+        {/* Floating ambient orbs */}
+        <div className="orb-animate absolute top-[15%] left-[8%] w-72 h-72 rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(0,240,255,0.07) 0%, transparent 70%)" }} />
+        <div className="orb-animate-reverse absolute bottom-[20%] right-[6%] w-96 h-96 rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(0,128,255,0.06) 0%, transparent 70%)" }} />
+        <div className="orb-animate absolute bottom-[30%] left-[20%] w-48 h-48 rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(255,0,60,0.04) 0%, transparent 70%)", animationDelay: "4s" }} />
+
         {/* Atmospheric radial glow — parallax on scroll */}
         <motion.div
           className="absolute inset-0 pointer-events-none"
           style={{
             y: glowY,
             background:
-              "radial-gradient(ellipse 70% 55% at 50% 52%, rgba(0,240,255,0.06) 0%, rgba(0,240,255,0.015) 45%, transparent 70%)",
+              "radial-gradient(ellipse 70% 55% at 50% 52%, rgba(0,240,255,0.07) 0%, rgba(0,128,255,0.03) 45%, transparent 70%)",
           }}
         />
 
@@ -150,15 +170,22 @@ export default function Home() {
                 {/* Line break on mobile */}
                 <span className="block md:inline" aria-hidden="true" />
 
-                {/* "STRENGTH" — shimmer gradient */}
-                <motion.span
-                  initial={{ opacity: 0, y: "0.6em", skewX: -6, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, y: 0, skewX: 0, filter: "blur(0px)" }}
-                  transition={{ duration: 0.55, delay: 0.98, ease: [0.16, 1, 0.3, 1] }}
-                  className="shimmer-text inline-block align-baseline"
-                >
-                  STRENGTH
-                </motion.span>
+                {/* Dynamic Word Container */}
+                <span className="inline-block min-w-[5.5em] text-left">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={dynamicWord}
+                      id="dynamic-word"
+                      initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+                      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, y: -20, filter: "blur(8px)" }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                      className="shimmer-text inline-block align-baseline"
+                    >
+                      {dynamicWord}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>
               </h1>
 
               {/* Subtitle */}
@@ -173,11 +200,12 @@ export default function Home() {
                 Your threshold is only the beginning.
               </motion.p>
 
-              {/* ── CTA BUTTON ────────────────────────────── */}
+              {/* ── CTA BUTTONS ───────────────────────────── */}
               <motion.div
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.9, ease: "easeOut", delay: 1.7 }}
+                className="flex flex-col sm:flex-row items-center gap-4 justify-center"
               >
                 <motion.button
                   whileHover={{
@@ -188,21 +216,38 @@ export default function Home() {
                   transition={{ type: "spring", stiffness: 300, damping: 18 }}
                   className="relative px-11 py-[14px] text-[#00f0ff] text-[10px] uppercase tracking-[0.42em] font-semibold border border-[#00f0ff]/35 rounded-full bg-[#00f0ff]/[0.06] cursor-pointer overflow-hidden group btn-glow-pulse"
                 >
-                  {/* Sweep-fill on hover */}
-                  <span
-                    className="absolute inset-0 rounded-full bg-[#00f0ff]/[0.10] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
-                    aria-hidden="true"
-                  />
-                  {/* Ping ring */}
-                  <span
-                    className="absolute inset-0 rounded-full border border-[#00f0ff]/18 animate-ping"
-                    style={{ animationDuration: "2.8s" }}
-                    aria-hidden="true"
-                  />
-                  <span className="relative z-10 group-hover:tracking-[0.52em] transition-all duration-500">
-                    Start Training
-                  </span>
+                  <span className="absolute inset-0 rounded-full bg-[#00f0ff]/[0.10] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" aria-hidden="true" />
+                  <span className="absolute inset-0 rounded-full border border-[#00f0ff]/18 animate-ping" style={{ animationDuration: "2.8s" }} aria-hidden="true" />
+                  <span className="relative z-10 group-hover:tracking-[0.52em] transition-all duration-500">Start Training</span>
                 </motion.button>
+                <motion.a
+                  href="#pricing"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                  className="px-11 py-[14px] text-white/40 text-[10px] uppercase tracking-[0.42em] font-semibold border border-white/10 rounded-full hover:border-white/25 hover:text-white/60 transition-all duration-500 cursor-pointer"
+                >
+                  View Plans
+                </motion.a>
+              </motion.div>
+
+              {/* ── STATS STRIP ──────────────────────────── */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, ease: "easeOut", delay: 2.0 }}
+                className="mt-16 flex items-center justify-center gap-10 md:gap-16"
+              >
+                {[
+                  { val: "1,200+", label: "Active Members" },
+                  { val: "98%",    label: "Satisfaction Rate" },
+                  { val: "12+",    label: "Expert Coaches" },
+                ].map((s, i) => (
+                  <div key={i} className="text-center">
+                    <p className="text-2xl md:text-3xl font-black gradient-text-cyan tracking-tight">{s.val}</p>
+                    <p className="text-white/30 text-[9px] uppercase tracking-[0.35em] mt-1">{s.label}</p>
+                  </div>
+                ))}
               </motion.div>
 
               {/* ── SCROLL INDICATOR ─────────────────────── */}
@@ -230,7 +275,7 @@ export default function Home() {
           >
             <p className="text-[#ff003c] uppercase tracking-[0.3em] text-xs font-semibold mb-6">Our Philosophy</p>
             <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-8 border-l-4 border-[#ff003c] pl-6 leading-tight shimmer-text">
-              ENGINEERED <br />FOR POWER
+              ENGINEERED <br />FOR MASTERY
             </h2>
             <p className="text-white/60 text-lg leading-relaxed mb-6 font-light">
               Every movement is designed to push limits. Every rep is a step toward mastery.
@@ -265,7 +310,8 @@ export default function Home() {
       </section>
 
       {/* ── 4) PROGRAMS / SERVICES ───────────────────────────────────────────── */}
-      <section id="programs" className="py-32 px-8 md:px-24 bg-white/[0.01] relative z-10 border-y border-white/[0.02]">
+      <section id="programs" className="py-32 px-8 md:px-24 relative z-10 border-y border-white/[0.04]"
+        style={{ background: "linear-gradient(180deg, #050505 0%, #070a0a 50%, #050505 100%)" }}>
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -274,16 +320,17 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="text-center mb-20"
           >
+            <p className="text-[#00f0ff] uppercase tracking-[0.4em] text-xs font-semibold mb-4">Choose Your Discipline</p>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter shimmer-text">DISCIPLINES</h2>
-            <p className="text-white/50 tracking-[0.2em] uppercase text-sm mt-4">Select your path</p>
+            <div className="gradient-line-sweep h-px w-32 mx-auto mt-6 rounded-full opacity-60" />
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: "Strength",    sub: "Raw Power generation",     color: "teal" },
-              { title: "Hypertrophy", sub: "Muscle architecture",      color: "magenta" },
-              { title: "Fat Loss",    sub: "Metabolic conditioning",   color: "teal" },
-              { title: "Performance", sub: "Athletic optimization",    color: "magenta" },
+              { title: "Strength",    sub: "Raw power generation",   detail: "Barbell, powerlifting & compound lifts", color: "teal",    icon: "⚡" },
+              { title: "Hypertrophy", sub: "Muscle architecture",    detail: "Science-backed volume & intensity",       color: "magenta", icon: "💪" },
+              { title: "Fat Loss",    sub: "Metabolic conditioning", detail: "HIIT, circuits & caloric strategy",       color: "teal",    icon: "🔥" },
+              { title: "Performance", sub: "Athletic optimization",  detail: "Speed, agility & sport-specific drills",  color: "magenta", icon: "🎯" },
             ].map((val, i) => (
               <motion.div
                 key={val.title}
@@ -291,13 +338,18 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="group relative bg-[#0a0a0a] border border-white/5 p-8 rounded-xl cursor-pointer hover:-translate-y-2 transition-all duration-500 overflow-hidden"
+                className="gradient-border-card card-sweep-hover group relative bg-[#080808] p-8 rounded-xl cursor-pointer hover:-translate-y-2 transition-all duration-300 overflow-hidden"
+                style={{ background: "linear-gradient(145deg, #0a0a0a, #060606)" }}
               >
-                <div className={`absolute inset-0 bg-gradient-to-b from-transparent to-accent-${val.color}/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                <div className={`absolute bottom-0 left-0 h-1 w-full bg-accent-${val.color} scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
-                <div className="text-4xl font-light text-white/20 mb-6 group-hover:text-white/40 transition-colors">0{i+1}</div>
-                <h3 className="text-xl font-bold tracking-wide mb-2 relative z-10">{val.title}</h3>
-                <p className="text-white/40 text-sm relative z-10">{val.sub}</p>
+                {/* Sweep shimmer on hover */}
+                <span className="sweep-el absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-white/[0.04] to-transparent -left-16" />
+                <div className={`absolute inset-0 bg-gradient-to-br from-transparent via-transparent ${val.color === 'teal' ? 'to-[#00f0ff]/[0.04]' : 'to-[#ff003c]/[0.04]'} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                <div className={`absolute bottom-0 left-0 h-[2px] w-full ${val.color === 'teal' ? 'bg-gradient-to-r from-[#00f0ff] to-[#0080ff]' : 'bg-gradient-to-r from-[#ff003c] to-[#ff6b35]'} scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-left`} />
+                <div className="text-3xl mb-5">{val.icon}</div>
+                <div className="text-xs font-light text-white/15 mb-4 tracking-widest">0{i+1}</div>
+                <h3 className="text-xl font-bold tracking-wide mb-1 relative z-10">{val.title}</h3>
+                <p className={`text-xs font-semibold uppercase tracking-widest mb-3 ${val.color === 'teal' ? 'text-[#00f0ff]/60' : 'text-[#ff003c]/60'}`}>{val.sub}</p>
+                <p className="text-white/30 text-xs leading-relaxed relative z-10">{val.detail}</p>
               </motion.div>
             ))}
           </div>
@@ -307,7 +359,7 @@ export default function Home() {
       {/* ── 5) FEATURE HIGHLIGHTS ────────────────────────────────────────────── */}
       <section className="py-24 relative z-10">
         {[
-          { t: "RAW POWER",      d: "Heavy lifts. Pure strength. No compromises.",       align: "left",  img: "/feature_power.png" },
+          { t: "RAW MASTERY",      d: "Heavy lifts. Pure strength. No compromises.",       align: "left",  img: "/feature_power.png" },
           { t: "PRECISION FORM", d: "Technique defines performance. Master the mechanics.", align: "right", img: "/feature_form.png" },
           { t: "ENDURANCE EDGE", d: "Push beyond fatigue. Outlast every limit.",          align: "left",  img: "/feature_endurance.png" },
         ].map((block, i) => (
@@ -402,15 +454,24 @@ export default function Home() {
             ].map((plan, i) => (
               <motion.div
                 key={plan.name}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 40, scale: plan.highlight ? 1.05 : 1 }}
+                whileInView={{ opacity: 1, y: 0, scale: plan.highlight ? 1.05 : 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: i * 0.15 }}
-                className={`relative p-10 rounded-2xl border transition-all duration-500 overflow-hidden flex flex-col ${
+                transition={{ 
+                  duration: 0.15, // Fast for hover
+                  opacity: { duration: 0.8, delay: i * 0.15 }, // Slower for entrance
+                  y: { duration: 0.8, delay: i * 0.15 },
+                }}
+                whileHover={{ 
+                  scale: plan.highlight ? 1.1 : 1.05,
+                  zIndex: 30,
+                  boxShadow: "0 0 50px rgba(0,240,255,0.15)",
+                }}
+                className={`relative p-10 rounded-2xl border transition-all duration-150 overflow-hidden flex flex-col cursor-pointer ${
                   plan.highlight 
-                    ? "bg-[#0a0a0a] border-[#00f0ff]/30 shadow-[0_0_40px_rgba(0,240,255,0.05)] scale-105 z-20" 
-                    : "bg-transparent border-white/5 hover:border-white/15"
-                }`}
+                    ? "bg-[#0a0a0a] border-[#00f0ff]/30 shadow-[0_0_40px_rgba(0,240,255,0.05)] z-20" 
+                    : "bg-transparent border-white/5"
+                } hover:border-[#00f0ff]/50`}
               >
                 {plan.highlight && (
                   <div className="absolute top-0 right-0 px-4 py-1 bg-[#00f0ff] text-[#050505] text-[10px] font-bold uppercase tracking-widest rounded-bl-lg">
@@ -599,30 +660,41 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
       {/* ── 7) FINAL CTA ─────────────────────────────────────────────────────── */}
-      <section className="py-40 relative z-10 overflow-hidden flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0a0a0a]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.04)_0%,transparent_70%)]" />
+      <section className="py-40 relative z-10 overflow-hidden flex items-center justify-center"
+        style={{ background: "linear-gradient(180deg, #050505 0%, #040a0a 50%, #050505 100%)" }}>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(0,240,255,0.05)_0%,rgba(0,128,255,0.03)_40%,transparent_70%)]" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-48 bg-[#00f0ff]/[0.04] blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-96 h-48 bg-[#0080ff]/[0.04] blur-[80px] rounded-full pointer-events-none" />
 
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1 }}
-          className="text-center relative z-10 px-6"
+          className="text-center relative z-10 px-6 max-w-3xl mx-auto"
         >
           <p className="text-[#00f0ff] uppercase tracking-[0.4em] text-xs font-semibold mb-6">Begin today</p>
           <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 shimmer-text">
             START YOUR <br className="md:hidden" />TRANSFORMATION
           </h2>
-          <p className="text-white/60 text-xl font-light mb-12">Train with purpose. Perform with power.</p>
+          <p className="text-white/50 text-lg font-light mb-4 max-w-xl mx-auto leading-relaxed">
+            Train with purpose. Perform with power. Join over 1,200 athletes who chose to push beyond their limits.
+          </p>
+          <div className="flex flex-wrap justify-center gap-6 text-white/25 text-xs uppercase tracking-widest mb-12">
+            <span>✓ No lock-in contracts</span>
+            <span>✓ Free first session</span>
+            <span>✓ Cancel anytime</span>
+          </div>
+          <div className="gradient-line-sweep h-px w-24 mx-auto mb-10 rounded-full opacity-50" />
           <motion.button
-            whileHover={{ scale: 1.06, boxShadow: "0 0 40px rgba(0,240,255,0.4)" }}
+            whileHover={{ scale: 1.06, boxShadow: "0 0 50px rgba(0,240,255,0.35), 0 0 100px rgba(0,128,255,0.15)" }}
             whileTap={{ scale: 0.96 }}
-            className="px-12 py-5 border border-[#00f0ff]/50 bg-[#00f0ff]/10 hover:bg-[#00f0ff]/20 text-[#00f0ff] tracking-[0.3em] font-medium uppercase transition-all duration-500 rounded-sm shadow-[0_0_20px_rgba(0,240,255,0.15)] active:scale-95"
+            className="relative px-14 py-5 border border-[#00f0ff]/50 text-[#00f0ff] tracking-[0.3em] font-medium uppercase transition-all duration-500 rounded-sm shadow-[0_0_30px_rgba(0,240,255,0.12)] active:scale-95 overflow-hidden group"
+            style={{ background: "linear-gradient(135deg, rgba(0,240,255,0.08) 0%, rgba(0,128,255,0.08) 100%)" }}
           >
-            Join Now
+            <span className="absolute inset-0 bg-gradient-to-r from-[#00f0ff]/10 to-[#0080ff]/10 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+            <span className="relative z-10">Join Now</span>
           </motion.button>
         </motion.div>
       </section>
