@@ -232,24 +232,7 @@ export default function Home() {
                 </motion.a>
               </motion.div>
 
-              {/* ── STATS STRIP ──────────────────────────── */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, ease: "easeOut", delay: 2.0 }}
-                className="mt-16 flex items-center justify-center gap-10 md:gap-16"
-              >
-                {[
-                  { val: "1,200+", label: "Active Members" },
-                  { val: "98%",    label: "Satisfaction Rate" },
-                  { val: "12+",    label: "Expert Coaches" },
-                ].map((s, i) => (
-                  <div key={i} className="text-center">
-                    <p className="text-2xl md:text-3xl font-black gradient-text-cyan tracking-tight">{s.val}</p>
-                    <p className="text-white/30 text-[9px] uppercase tracking-[0.35em] mt-1">{s.label}</p>
-                  </div>
-                ))}
-              </motion.div>
+
 
               {/* ── SCROLL INDICATOR ─────────────────────── */}
               <ScrollCapsule />

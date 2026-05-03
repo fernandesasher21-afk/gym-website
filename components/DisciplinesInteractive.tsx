@@ -97,22 +97,25 @@ export default function DisciplinesInteractive() {
                 }
               `}
             >
-              {/* Highlight Sweep Background for Active State */}
-              {isActive && (
-                <motion.div
-                  layoutId="activeHighlight"
-                  className={`absolute inset-0 bg-gradient-to-r from-transparent via-transparent ${isTeal ? 'to-[#00f0ff]/[0.05]' : 'to-[#ff003c]/[0.05]'}`}
-                  transition={{ duration: 0.5 }}
-                />
-              )}
-              {/* Accent Border Bottom */}
-              {isActive && (
-                <motion.div
-                  layoutId="activeBorder"
-                  className={`absolute bottom-0 left-0 h-[2px] w-full ${isTeal ? 'bg-gradient-to-r from-[#00f0ff] to-[#0080ff]' : 'bg-gradient-to-r from-[#ff003c] to-[#ff6b35]'}`}
-                  transition={{ duration: 0.5 }}
-                />
-              )}
+              {/* Highlight Background for Active State */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isActive ? 1 : 0 }}
+                className={`absolute inset-0 bg-gradient-to-r from-transparent via-transparent ${isTeal ? 'to-[#00f0ff]/[0.05]' : 'to-[#ff003c]/[0.05]'}`}
+                transition={{ duration: 0.4 }}
+              />
+              
+              {/* Accent Border Bottom - Fixed to stay down and not travel */}
+              <motion.div
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{ 
+                  scaleX: isActive ? 1 : 0, 
+                  opacity: isActive ? 1 : 0 
+                }}
+                style={{ originX: 0 }}
+                className={`absolute bottom-0 left-0 h-[2px] w-full ${isTeal ? 'bg-gradient-to-r from-[#00f0ff] to-[#0080ff]' : 'bg-gradient-to-r from-[#ff003c] to-[#ff6b35]'}`}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              />
 
               {/* CARD HEADER */}
               <div className="relative z-10 flex items-center gap-6 p-6">
