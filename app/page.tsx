@@ -403,61 +403,102 @@ export default function Home() {
             <h2 className="text-4xl md:text-6xl font-bold tracking-tighter shimmer-text">PRICING</h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
             {[
-              { name: "Standard", price: "$49", features: ["Access to all areas", "Initial assessment", "Locker access", "All gym equipment"], highlight: false },
-              { name: "Pro", price: "$89", features: ["Priority booking", "2 PT sessions/mo", "Custom diet plan", "All standard features"], highlight: true },
-              { name: "Elite", price: "$149", features: ["Unlimited PT sessions", "Full physical therapy", "Private recovery suite", "24/7 priority support"], highlight: false },
+              { 
+                name: "1 Month", 
+                price: "₹2,999", 
+                period: "/mo",
+                features: ["Access to all areas", "Initial assessment", "Locker access", "All gym equipment"], 
+                highlight: false,
+                color: "white" 
+              },
+              { 
+                name: "3 Months", 
+                price: "₹7,499", 
+                period: "/quarter",
+                features: ["Priority booking", "2 PT sessions/mo", "Custom diet plan", "All standard features"], 
+                highlight: true,
+                color: "teal" 
+              },
+              { 
+                name: "1 Year", 
+                price: "₹24,999", 
+                period: "/year",
+                features: ["Unlimited PT sessions", "Full physical therapy", "Private recovery suite", "24/7 priority support"], 
+                highlight: false,
+                color: "magenta" 
+              },
             ].map((plan, i) => (
               <motion.div
                 key={plan.name}
-                initial={{ opacity: 0, y: 40, scale: plan.highlight ? 1.05 : 1 }}
-                whileInView={{ opacity: 1, y: 0, scale: plan.highlight ? 1.05 : 1 }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ 
-                  duration: 0.15, // Fast for hover
-                  opacity: { duration: 0.8, delay: i * 0.15 }, // Slower for entrance
-                  y: { duration: 0.8, delay: i * 0.15 },
+                  duration: 0.8, 
+                  delay: i * 0.15,
+                  ease: [0.16, 1, 0.3, 1]
                 }}
                 whileHover={{ 
-                  scale: plan.highlight ? 1.1 : 1.05,
-                  zIndex: 30,
-                  boxShadow: "0 0 50px rgba(0,240,255,0.15)",
+                  y: -10,
+                  transition: { duration: 0.3 }
                 }}
-                className={`relative p-10 rounded-2xl border transition-all duration-150 overflow-hidden flex flex-col cursor-pointer ${
+                className={`group relative p-10 rounded-3xl border transition-all duration-500 flex flex-col min-h-[580px] ${
                   plan.highlight 
-                    ? "bg-[#0a0a0a] border-[#00f0ff]/30 shadow-[0_0_40px_rgba(0,240,255,0.05)] z-20" 
-                    : "bg-transparent border-white/5"
-                } hover:border-[#00f0ff]/50`}
+                    ? "bg-gradient-to-b from-[#0a0a0a] to-[#050505] border-[#00f0ff]/30 shadow-[0_20px_50px_rgba(0,240,255,0.05)] scale-105 z-20" 
+                    : "bg-[#080808] border-white/[0.05] hover:border-white/20"
+                }`}
               >
+                {/* Glow effect on hover */}
+                <div className={`absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${
+                  plan.color === 'teal' ? 'bg-gradient-to-b from-[#00f0ff]/10 to-transparent' : 
+                  plan.color === 'magenta' ? 'bg-gradient-to-b from-[#ff003c]/10 to-transparent' : 
+                  'bg-gradient-to-b from-white/5 to-transparent'
+                }`} />
+
                 {plan.highlight && (
-                  <div className="absolute top-0 right-0 px-4 py-1 bg-[#00f0ff] text-[#050505] text-[10px] font-bold uppercase tracking-widest rounded-bl-lg">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-6 py-1.5 bg-[#00f0ff] text-[#050505] text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)]">
                     Most Popular
                   </div>
                 )}
-                <h3 className="text-2xl font-bold mb-4">{plan.name}</h3>
-                <div className="flex items-baseline gap-1 mb-8">
-                  <span className="text-5xl font-black">{plan.price}</span>
-                  <span className="text-white/40 text-sm">/mo</span>
+
+                <div className="relative z-10 mb-8">
+                  <h3 className="text-xl font-bold tracking-widest text-white/40 mb-10 uppercase">{plan.name}</h3>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-6xl font-black tracking-tighter text-white">{plan.price}</span>
+                    <span className="text-white/30 text-sm font-medium">{plan.period}</span>
+                  </div>
                 </div>
-                <ul className="space-y-4 mb-10 flex-grow">
+
+                <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-10" />
+
+                <ul className="space-y-6 mb-12 flex-grow relative z-10">
                   {plan.features.map((f) => (
-                    <li key={f} className="text-white/60 text-sm flex items-center gap-3">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#00f0ff]/40" />
+                    <li key={f} className="text-white/50 text-sm flex items-center gap-4 group/item hover:text-white/80 transition-colors">
+                      <div className={`w-1.5 h-1.5 rounded-full ${
+                        plan.color === 'teal' ? 'bg-[#00f0ff]' : 
+                        plan.color === 'magenta' ? 'bg-[#ff003c]' : 
+                        'bg-white/40'
+                      } shadow-[0_0_8px_currentColor]`} />
                       {f}
                     </li>
                   ))}
                 </ul>
+
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`w-full py-4 text-[10px] uppercase tracking-[0.3em] font-bold rounded-full border transition-all duration-500 ${
+                  whileHover={{ scale: 1.02, letterSpacing: "0.4em" }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`relative z-10 w-full py-5 text-[10px] uppercase tracking-[0.3em] font-black rounded-xl border transition-all duration-500 overflow-hidden ${
                     plan.highlight 
-                      ? "bg-[#00f0ff] text-[#050505] border-[#00f0ff]" 
-                      : "bg-transparent text-[#00f0ff] border-[#00f0ff]/30 hover:bg-[#00f0ff]/10"
+                      ? "bg-[#00f0ff] text-[#050505] border-[#00f0ff] shadow-[0_10px_30px_rgba(0,240,255,0.2)]" 
+                      : "bg-transparent text-white border-white/10 hover:border-white/30 hover:bg-white/[0.02]"
                   }`}
                 >
-                  Choose Plan
+                  <span className="relative z-10">Choose Plan</span>
+                  {plan.highlight && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full animate-shimmer" />
+                  )}
                 </motion.button>
               </motion.div>
             ))}
